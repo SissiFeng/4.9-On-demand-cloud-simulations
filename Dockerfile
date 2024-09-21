@@ -1,13 +1,10 @@
-# TODO: Choose a base image (e.g., python:3.8-slim-buster)
+# TODO: Choose an appropriate base image for AWS Lambda Python function
 
-# TODO: Set working directory
+# TODO: Copy necessary files to the container
+# Hint: You need to copy lambda_function.py, simulator.py, and requirements.txt
 
-# TODO: Copy requirements file and install dependencies
+# TODO: Install the function's dependencies
+# Hint: Use pip to install from requirements.txt
 
-# TODO: Copy application files
-
-# TODO: Set environment variables (if needed)
-
-# TODO: Expose port
-
-# TODO: Set the command to run the application
+# TODO: Set the CMD to your handler
+# Hint: The format should be: CMD [ "file_name.function_name" ]
