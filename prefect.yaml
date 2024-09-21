@@ -1,0 +1,17 @@
+# prefect.yaml
+name: material-discovery-project
+description: "Cloud-based material discovery simulation workflow"
+
+storage:
+  use_local_storage: true
+
+schedules: []
+
+flows:
+  - name: material_discovery_workflow
+    entrypoint: workflow.py:material_discovery_workflow
+
+deployments:
+  - name: default
+    flow_name: material_discovery_workflow
+    schedule: null
