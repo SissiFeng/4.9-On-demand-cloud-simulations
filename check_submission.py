@@ -26,28 +26,42 @@ def check_workflow():
     print("✅ Workflow check passed")
 
 def check_readme():
-    """Check if README.md contains required sections."""
     with open('README.md', 'r') as f:
         content = f.read()
     
     required_sections = [
-        "AWS Lambda Deployment",
-        "Prefect Workflow",
-        "Performance Analysis"
+        "Project Overview",
+        "AWS Lambda Deployment Process",
+        "Prefect Workflow Structure",
+        "Performance Analysis",
+        "Challenges and Solutions",
+        "Usage"
     ]
     
+    missing_sections = []
     for section in required_sections:
-        assert section in content, f"README is missing {section} section"
+        if not re.search(f"#{1,6} *{section}", content, re.IGNORECASE):
+            missing_sections.append(section)
+    
+    if missing_sections:
+        print(f"❌ README check failed. Missing sections: {', '.join(missing_sections)}")
+        return False
+    
+    #  Lambda/URL/ARN
+    if not re.search(r'(lambda.*?\.amazonaws\.com|arn:aws:lambda)', content, re.IGNORECASE):
+        print("❌ README check failed. Missing Lambda function URL or ARN.")
+        return False
+    
+   
+    if not re.search(r'local.*?execution.*?cloud.*?execution|cloud.*?execution.*?local.*?execution', content, re.IGNORECASE):
+        print("❌ README check failed. Missing comparison between local and cloud execution.")
+        return False
     
     print("✅ README check passed")
+    return True
 
 if __name__ == "__main__":
-    try:
-        check_simulator()
-        check_lambda_function()
-        check_workflow()
-        check_readme()
-        print("\n🎉 All checks passed!")
-    except AssertionError as e:
-        print(f"\n❌ Check failed: {str(e)}")
-        print("Please review your implementation and try again.")
+    check_simulator()
+    check_lambda_function()
+    check_workflow()
+    check_readme()
