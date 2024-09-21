@@ -1,179 +1,148 @@
-# Cloud Deployment of Materials Discovery Model
+# On-Demand Cloud Simulations for Materials Discovery
 
-## 🎯 Assignment Overview
+## Project Overview
+This project implements an on-demand cloud simulation system for materials discovery using AWS Lambda, Docker, and Prefect. It demonstrates the integration of machine learning models with cloud computing for efficient materials property prediction.
 
-In this assignment, you will develop a machine learning model for materials discovery, create web interfaces for it, and deploy the model to various cloud platforms. This project will give you hands-on experience with model development, API creation, containerization, and cloud deployment.
+## Setup Instructions
 
-## 🚀 Assignment Steps
+### Prerequisites
+- Python 3.8+
+- AWS account with CLI configured
+- Docker installed
+- Prefect installed
 
-### 1. Model Development
+### Installation
+1. Clone this repository:
+   ```
+   git clone [repository-url]
+   cd [repository-name]
+   ```
 
-#### 1.1 Complete the `model.py` file
-- Open `model.py`
-- Implement the following TODO sections:
-  - Prepare features (X) and target (y)
-  - Split the data into training and testing sets
-  - Create and train the model
-  - Evaluate the model
-  - Save the model
-- Run the script to train and save your model:
+2. Install required packages:
+   ```
+   pip install -r requirements.txt
+   ```
+
+3. Set up AWS credentials:
+   ```
+   aws configure
+   ```
+
+## Assignment Steps
+
+### 1. Implement the Simulator (simulator.py)
+- Complete the `simulate_material_property` function in `simulator.py`.
+- Run tests: `python test_simulation.py`
+
+### 2. Develop AWS Lambda Function (lambda_function.py)
+- Implement the `lambda_handler` function in `lambda_function.py`.
+- Test locally: `python test_lambda_function.py`
+
+### 3. Create Dockerfile
+- Complete the Dockerfile for containerizing the Lambda function.
+
+### 4. Implement Prefect Workflow (workflow.py)
+- Open `workflow.py` and implement the following:
+  - `generate_composition` task: Generate random material compositions.
+  - `run_simulation` task: Call the AWS Lambda function to simulate material properties.
+  - `analyze_result` task: Analyze the simulation results.
+  - `material_discovery_workflow` flow: Orchestrate the entire workflow.
+- Test locally:
   ```
-  python model.py
+  python workflow.py
+  ```
+### 5. Set up and Test Prefect
+- Install Prefect if not already installed:
+  ```
+  pip install prefect
+  ```
+- Start the Prefect server (in a separate terminal):
+  ```
+  prefect server start
+  ```
+- In your main terminal, set up the Prefect API:
+  ```
+  prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+  ```
+- Create a deployment for your workflow:
+  ```
+  prefect deployment build workflow.py:material_discovery_workflow -n "material-discovery" -q default
+  ```
+- Apply the deployment:
+  ```
+  prefect deployment apply material_discovery_workflow-deployment.yaml
+  ```
+- Start a Prefect agent:
+  ```
+  prefect agent start -q default
+  ```
+- Run your deployment:
+  ```
+  prefect deployment run material_discovery_workflow/material-discovery
   ```
 
-#### 1.2 Verify your implementation
+### 6. AWS Lambda Deployment
+- Build and push Docker image to AWS ECR.
+- Create Lambda function using the Docker image.
+- Configure necessary IAM roles and permissions.
+
+### 7. Run and Test Prefect Workflow with AWS Lambda
+- Ensure your AWS Lambda function is deployed and accessible.
+- Update the `run_simulation` task in `workflow.py` to call your deployed Lambda function.
+- Run the Prefect workflow again to verify it correctly interacts with the Lambda function:
+  ```
+  prefect deployment run material_discovery_workflow/material-discovery
+  ```
+- Check the Prefect UI (http://127.0.0.1:4200) to monitor the workflow execution and results.
+
+### 8. Update README.md
+After successfully implementing and testing all components, update this README.md file with the following information:
+
+- Project Overview: Provide a brief description of your implementation and its purpose.
+- AWS Lambda Deployment Process: 
+  - Detailed steps you followed to deploy your Lambda function.
+  - Any challenges faced and how you resolved them.
+- Prefect Workflow Structure:
+  - Explain the structure of your workflow.
+  - Describe each task and how they interact.
+- Performance Analysis:
+  - Compare local execution vs. cloud execution.
+  - Discuss aspects like speed, scalability, and cost.
+- Challenges and Solutions:
+  - Describe any significant challenges you encountered during the project.
+  - Explain how you overcame these challenges.
+
+### 9. Final Checks and Submission
+- Ensure all components are working as expected:
+  - Simulator
+  - Lambda function
+  - Prefect workflow
 - Run the check script:
   ```
   python check_submission.py
   ```
-- Ensure all checks pass. If not, revisit your implementation and make necessary corrections.
-
-### 2. Flask API Development
-
-#### 2.1 Complete the `app.py` file
-- Open `app.py`
-- Implement the following TODO sections:
-  - Load the trained model
-  - Get input data from request
-  - Make prediction
-  - Return prediction as JSON
-- Test your Flask app locally:
-  ```
-  python app.py
-  ```
-- Use a tool like curl or Postman to test the `/predict` endpoint
-
-### 3. Gradio Interface Development
-
-#### 3.1 Complete the `gradio_app.py` file
-- Open `gradio_app.py`
-- Implement the following TODO sections:
-  - Load the trained model
-  - Create the prediction function
-  - Set up the Gradio interface
-- Test your Gradio app locally:
-  ```
-  python gradio_app.py
-  ```
-
-### 4. Containerization
-
-#### 4.1 Complete the `Dockerfile`
-- Open `Dockerfile`
-- Fill in the TODO sections:
-  - Choose a base image
-  - Set working directory
-  - Copy requirements file and install dependencies
-  - Copy application files
-  - Set environment variables (if needed)
-  - Expose port
-  - Set the command to run the application
-- Build and test your Docker image locally:
-  ```
-  docker build -t materials-discovery-app .
-  docker run -p 5000:5000 materials-discovery-app
-  ```
-
-### 5. Prepare requirements.txt
-
-#### 5.1 Update requirements.txt
-- Open `requirements.txt`
-- Ensure it includes all necessary libraries for your project. At minimum, it should contain:
-  ```
-  Flask==2.0.1
-  scikit-learn==0.24.2
-  pandas==1.3.3
-  joblib==1.0.1
-  gradio==2.0.8
-  ```
-- Add any other libraries you've used in your project
-- Save the file
-
-### 6. Cloud Deployments
-
-#### 6.1 PythonAnywhere Deployment
-- Sign up for a free PythonAnywhere account
-- Upload your `app.py`, trained model file, and `requirements.txt`
-- Create a new virtual environment and install the requirements:
-  ```
-  mkvirtualenv --python=/usr/bin/python3.8 myenv
-  pip install -r requirements.txt
-  ```
-- Set up a new Web app using Flask
-- Configure your app and make sure it's running
-- Test your deployed app and save the URL
-
-#### 6.2 Hugging Face Spaces Deployment
-- Sign up for a Hugging Face account
-- Create a new Space, choosing Gradio as the SDK
-- Upload your `gradio_app.py`, trained model file, and `requirements.txt`
-- Hugging Face will automatically install the requirements from your `requirements.txt`
-- Ensure your app is running correctly on Hugging Face Spaces
-- Save the deployment URL
-
-#### 6.3 Google Cloud Run Deployment
-- Set up a Google Cloud account (using free credits)
-- Install and configure Google Cloud SDK
-- Ensure your `Dockerfile` copies and uses the `requirements.txt`:
-  ```dockerfile
-  COPY requirements.txt .
-  RUN pip install --no-cache-dir -r requirements.txt
-  ```
-- Build your Docker image and push it to Google Container Registry
-- Deploy your app using Google Cloud Run
-- Test your deployed app and save the URL
-
-### 7. Documentation and Comparison
-
-#### 7.1 Update existing README.md
-- Open the existing `README.md` file in the root of your repository
-- Keep the original content at the top that describes the assignment
-- Add a new section at the bottom of the file with the following information:
-  - Brief description of your implemented model and its purpose
-  - PythonAnywhere deployment URL
-  - Hugging Face Spaces deployment URL
-  - Google Cloud Run deployment URL
-- Save the updated README.md file
-   
-Example structure for your additions:
-
-```
-My Implementation
-Model Description
-[Your model description here]
-Deployment URLs
-PythonAnywhere: [Your URL here]
-Hugging Face Spaces: [Your URL here]
-Google Cloud Run: [Your URL here]
-Deployment Comparison
-[Your comparison and analysis here]
-```
-
-   
-  
-### 8. Final Submission
-
-#### 8.1 Push your changes to GitHub
-- Commit all your changes:
+- Address any issues highlighted by the check script.
+- Commit and push your changes:
   ```
   git add .
-  git commit -m "Complete cloud deployment assignment"
+  git commit -m "Complete on-demand cloud simulation assignment"
   git push origin main
   ```
-- This push will trigger the GitHub Actions workflow for autograding
+- Verify that the GitHub Actions workflow runs successfully:
+  - Go to the "Actions" tab in your GitHub repository.
+  - Check that all autograding checks have passed.
+  - If any checks fail, review the error messages, make necessary corrections, and push again.
 
-#### 8.2 Verify autograding results
-- Go to the "Actions" tab in your GitHub repository
-- Check that all autograding checks have passed
-- If any checks fail, review the error messages, make necessary corrections, and push again
+## Submission Checklist
+Before final submission, ensure you have completed the following:
 
-## 📝 Grading Criteria
+- [ ] Implemented and tested the material property simulator
+- [ ] Created and deployed AWS Lambda function
+- [ ] Developed and tested Prefect workflow
+- [ ] Successfully integrated Lambda function with Prefect workflow
+- [ ] Updated README.md with all required information
+- [ ] Passed all checks in check_submission.py
+- [ ] Pushed all changes to GitHub
+- [ ] GitHub Actions workflow completed successfully
 
-Your assignment will be graded based on:
-- Correct implementation of the machine learning model
-- Functionality of Flask API and Gradio interface
-- Successful deployment to all three cloud platforms
-- Completeness and quality of your README.md documentation
-- Passing all autograding checks
-
-Good luck with your cloud deployment project! 🍀
+Congratulations on completing the On-Demand Cloud Simulations for Materials Discovery project!
