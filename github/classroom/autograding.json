@@ -1,0 +1,54 @@
+{
+  "tests": [
+    {
+      "name": "Model Implementation",
+      "setup": "pip install -r requirements.txt",
+      "run": "python check_submission.py",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 30
+    },
+    {
+      "name": "PythonAnywhere Deployment",
+      "setup": "",
+      "run": "curl -s -o /dev/null -w \"%{http_code}\" $PYTHONANYWHERE_URL/predict",
+      "input": "",
+      "output": "200",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "Hugging Face Spaces Deployment",
+      "setup": "",
+      "run": "curl -s -o /dev/null -w \"%{http_code}\" $HUGGINGFACE_URL",
+      "input": "",
+      "output": "200",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "Google Cloud Run Deployment",
+      "setup": "",
+      "run": "curl -s -o /dev/null -w \"%{http_code}\" $GOOGLE_CLOUD_RUN_URL/predict",
+      "input": "",
+      "output": "200",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "README Updates",
+      "setup": "",
+      "run": "grep -q \"PythonAnywhere URL:\" README.md && grep -q \"Hugging Face Spaces URL:\" README.md && grep -q \"Google Cloud Run URL:\" README.md && grep -q \"Deployment Comparison\" README.md",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 10
+    }
+  ]
+}

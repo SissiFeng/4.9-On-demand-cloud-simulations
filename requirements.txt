@@ -1,0 +1,13 @@
+-e . # package from this repo
+
+Flask==2.0.1
+scikit-learn==0.24.2
+pandas==1.3.3
+joblib==1.0.1
+gradio==2.0.8
+
+#  scipy
+#  matplotlib
+#  matplotlib-inline
+#  ipython
+#  ipykernel

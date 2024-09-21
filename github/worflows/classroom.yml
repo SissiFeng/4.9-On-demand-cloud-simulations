@@ -1,0 +1,68 @@
+name: GitHub Classroom Workflow
+
+on: [push]
+
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run model checks
+        run: python check_submission.py
+
+      - name: Check PythonAnywhere deployment
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.PYTHONANYWHERE_URL }}/predict)
+          if [ $response = "200" ]; then
+            echo "PythonAnywhere deployment successful"
+          else
+            echo "PythonAnywhere deployment failed"
+            exit 1
+          fi
+
+      - name: Check Hugging Face Spaces deployment
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.HUGGINGFACE_URL }})
+          if [ $response = "200" ]; then
+            echo "Hugging Face Spaces deployment successful"
+          else
+            echo "Hugging Face Spaces deployment failed"
+            exit 1
+          fi
+
+      - name: Check Google Cloud Run deployment
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.GOOGLE_CLOUD_RUN_URL }}/predict)
+          if [ $response = "200" ]; then
+            echo "Google Cloud Run deployment successful"
+          else
+            echo "Google Cloud Run deployment failed"
+            exit 1
+          fi
+
+      - name: Check README.md updates
+        run: |
+          if grep -q "PythonAnywhere URL:" README.md && \
+             grep -q "Hugging Face Spaces URL:" README.md && \
+             grep -q "Google Cloud Run URL:" README.md && \
+             grep -q "Deployment Comparison" README.md; then
+            echo "README.md properly updated"
+          else
+            echo "README.md is missing required information"
+            exit 1
+          fi
+
+      - name: Autograding
+        uses: education/autograding@v1
