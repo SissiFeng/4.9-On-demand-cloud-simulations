@@ -3,15 +3,33 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtual environment
+# Virtual environments
 venv/
 env/
 .env
 
-# IDE files
+# AWS
+.aws-sam/
+
+# Prefect
+.prefect/
+
+# IDEs
 .vscode/
 .idea/
 
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Docker
+*.log
+
+# Temporary files
+*.tmp
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Custom
+secrets.json
